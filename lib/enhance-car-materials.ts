@@ -84,7 +84,7 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
   const trim = isBrightTrimMaterial(meshName, material);
   const bodyPaint = !trim && isBodyPaintMaterial(meshName, material);
 
-  material.envMapIntensity = bodyPaint ? 0.28 : trim ? 0.4 : 0.35;
+  material.envMapIntensity = bodyPaint ? 0.44 : trim ? 0.55 : 0.45;
 
   if (material.map) {
     desaturateColor(material.color, bodyPaint ? 0.74 : 0.6);
@@ -103,8 +103,8 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
     material.emissiveIntensity = trim && /light/i.test(meshName) ? 0.08 : 0;
 
     if (material instanceof MeshPhysicalMaterial && bodyPaint) {
-      material.clearcoat = 0.22;
-      material.clearcoatRoughness = 0.32;
+      material.clearcoat = 0.34;
+      material.clearcoatRoughness = 0.2;
     }
     return;
   }

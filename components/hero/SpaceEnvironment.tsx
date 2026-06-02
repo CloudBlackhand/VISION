@@ -1,6 +1,6 @@
 "use client";
 
-import { Stars } from "@react-three/drei";
+import { Environment, Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import { BackSide } from "three";
 import { Planet } from "./Planet";
@@ -36,6 +36,9 @@ function SpaceSky() {
         fade
         speed={0.05}
       />
+
+      {/* IBL para reflexos de estrelas no verniz do carro */}
+      <Environment files="/hdr/space.hdr" background={false} />
 
       <Suspense fallback={null}>
         <Planet />

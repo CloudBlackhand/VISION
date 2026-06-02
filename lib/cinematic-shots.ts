@@ -61,11 +61,11 @@ export type CinematicShot = {
   easing?: ShotEasing;
 };
 
-/** 6 planos · ~31s — sem repetir zona nem cortes rápidos */
+/** 8 planos intercalados · frente/traseira/lado em rotação contínua */
 export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
   {
     id: "01-front-quarter-full",
-    duration: 5.5,
+    duration: 4.8,
     easing: "ease-out",
     from: {
       position: [2.85, 0.95, 4.1],
@@ -81,25 +81,25 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     },
   },
   {
-    id: "02-headlight-only",
-    duration: 6,
-    easing: "smooth",
+    id: "02-rear-quarter-dutch",
+    duration: 4.8,
+    easing: "ease-out",
     from: {
-      position: [2.15, 0.58, 3.15],
-      target: POI.headlight,
-      fov: 22,
-      roll: -0.2,
+      position: [-2.85, 0.55, 3.35],
+      target: POI.rearQuarter,
+      fov: 25,
+      roll: -0.28,
     },
     to: {
-      position: [1.92, 0.52, 2.88],
-      target: POI.headlight,
-      fov: 20,
-      roll: -0.16,
+      position: [-2.45, 0.48, 3],
+      target: POI.rearQuarter,
+      fov: 23,
+      roll: -0.22,
     },
   },
   {
     id: "03-side-panel-full",
-    duration: 5.5,
+    duration: 4.6,
     easing: "smooth",
     from: {
       position: [3.45, 0.78, 3.55],
@@ -115,8 +115,42 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     },
   },
   {
-    id: "04-wheel-full",
-    duration: 5,
+    id: "04-headlight-only",
+    duration: 4.4,
+    easing: "smooth",
+    from: {
+      position: [2.15, 0.58, 3.15],
+      target: POI.headlight,
+      fov: 22,
+      roll: -0.2,
+    },
+    to: {
+      position: [1.92, 0.52, 2.88],
+      target: POI.headlight,
+      fov: 20,
+      roll: -0.16,
+    },
+  },
+  {
+    id: "05-rear-detail-low",
+    duration: 4.4,
+    easing: "ease-in",
+    from: {
+      position: [-2.25, 0.3, 2.95],
+      target: [POI.rearQuarter[0] - 0.08, POI.rearQuarter[1] - 0.08, POI.rearQuarter[2] + 0.18],
+      fov: 23,
+      roll: -0.22,
+    },
+    to: {
+      position: [-1.9, 0.25, 2.65],
+      target: [POI.rearQuarter[0], POI.rearQuarter[1] - 0.05, POI.rearQuarter[2] + 0.12],
+      fov: 21,
+      roll: -0.18,
+    },
+  },
+  {
+    id: "06-wheel-full",
+    duration: 4.6,
     easing: "ease-in",
     from: {
       position: [3.05, 0.32, 3.05],
@@ -132,8 +166,8 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     },
   },
   {
-    id: "05-hood-full",
-    duration: 5,
+    id: "07-hood-full",
+    duration: 4.6,
     easing: "linear",
     from: {
       position: [1.35, 1.12, 3.05],
@@ -149,20 +183,20 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     },
   },
   {
-    id: "06-rear-quarter-dutch",
-    duration: 5.5,
-    easing: "ease-out",
+    id: "08-rear-quarter-wide",
+    duration: 4.8,
+    easing: "smooth",
     from: {
-      position: [-2.85, 0.55, 3.35],
+      position: [-3.15, 0.72, 3.7],
       target: POI.rearQuarter,
-      fov: 25,
-      roll: -0.28,
+      fov: 26,
+      roll: -0.2,
     },
     to: {
-      position: [-2.45, 0.48, 3],
+      position: [-2.75, 0.62, 3.3],
       target: POI.rearQuarter,
-      fov: 23,
-      roll: -0.22,
+      fov: 24,
+      roll: -0.14,
     },
   },
 ];
