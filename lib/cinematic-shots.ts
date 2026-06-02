@@ -2,13 +2,7 @@
  * Planos do edit VISION — só dolly/push estáticos (sem órbita ao redor do carro).
  * Referência: https://www.youtube.com/watch?v=2wQp9LlExP8
  */
-import { HERO_CAR_ANCHOR, HERO_PLANET } from "./hero-scene";
-
-export const PLANET_LOOK_TARGET: [number, number, number] = [
-  HERO_PLANET.position[0],
-  HERO_PLANET.position[1] - 1.2,
-  HERO_PLANET.position[2],
-];
+import { HERO_CAR_ANCHOR } from "./hero-scene";
 
 export const CAR_FOCUS: [number, number, number] = [
   HERO_CAR_ANCHOR.position[0],
@@ -39,15 +33,15 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     duration: 5.33,
     easing: "ease-out",
     from: {
-      position: [2.6, 4.8, 8.5],
-      target: [CAR_FOCUS[0], CAR_FOCUS[1] - 0.15, CAR_FOCUS[2] - 3],
-      fov: 42,
+      position: [1.9, 3.4, 6.4],
+      target: [CAR_FOCUS[0], CAR_FOCUS[1], CAR_FOCUS[2] - 1.3],
+      fov: 34,
       roll: -0.32,
     },
     to: {
-      position: [2, 4.2, 7.2],
-      target: [CAR_FOCUS[0], CAR_FOCUS[1], CAR_FOCUS[2] - 1.5],
-      fov: 38,
+      position: [1.3, 2.9, 5.5],
+      target: CAR_FOCUS,
+      fov: 30,
       roll: -0.26,
     },
   },
@@ -90,15 +84,15 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     duration: 2.97,
     easing: "ease-in",
     from: {
-      position: [7.2, 0.55, 9.5],
+      position: [6, 0.5, 7.8],
       target: CAR_FOCUS,
-      fov: 38,
+      fov: 34,
       roll: 0.12,
     },
     to: {
-      position: [5.8, 0.42, 7.8],
+      position: [4.8, 0.4, 6.3],
       target: CAR_FOCUS,
-      fov: 34,
+      fov: 30,
       roll: 0.08,
     },
   },
@@ -158,15 +152,15 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     duration: 4.9,
     easing: "ease-out",
     from: {
-      position: [1.8, 4, 9.5],
-      target: [CAR_FOCUS[0], CAR_FOCUS[1], CAR_FOCUS[2] - 2],
-      fov: 40,
+      position: [1.4, 2.8, 6.2],
+      target: [CAR_FOCUS[0], CAR_FOCUS[1], CAR_FOCUS[2] - 0.7],
+      fov: 33,
       roll: -0.2,
     },
     to: {
-      position: [1.2, 3.5, 8],
+      position: [1, 2.3, 5.4],
       target: CAR_FOCUS,
-      fov: 36,
+      fov: 29,
       roll: -0.16,
     },
   },
@@ -209,15 +203,15 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     duration: 2.87,
     easing: "smooth",
     from: {
-      position: [-6, 1.8, 9],
-      target: PLANET_LOOK_TARGET,
-      fov: 46,
+      position: [-4.8, 1.1, 6.2],
+      target: [CAR_FOCUS[0], CAR_FOCUS[1] + 0.2, CAR_FOCUS[2] - 0.8],
+      fov: 35,
       roll: -0.15,
     },
     to: {
-      position: [-4.5, 1.5, 7.5],
-      target: [2, -2, -20],
-      fov: 42,
+      position: [-3.9, 0.95, 5.2],
+      target: [CAR_FOCUS[0], CAR_FOCUS[1] + 0.15, CAR_FOCUS[2] - 0.3],
+      fov: 31,
       roll: -0.1,
     },
   },
@@ -243,15 +237,15 @@ export const EDIT_CAMERA_SEQUENCE: CinematicShot[] = [
     duration: 2.97,
     easing: "ease-out",
     from: {
-      position: [4, 4.5, 15],
+      position: [3.1, 2.4, 6.1],
       target: CAR_FOCUS,
-      fov: 48,
+      fov: 34,
       roll: -0.22,
     },
     to: {
-      position: [5.5, 5.2, 18],
-      target: [0, -0.3, -4],
-      fov: 52,
+      position: [3.8, 2.7, 7.3],
+      target: [CAR_FOCUS[0], CAR_FOCUS[1], CAR_FOCUS[2] - 0.6],
+      fov: 37,
       roll: -0.28,
     },
   },
