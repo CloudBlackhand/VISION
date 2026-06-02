@@ -8,7 +8,8 @@ import {
   HueSaturation,
   Vignette,
 } from "@react-three/postprocessing";
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
+import type { Group } from "three";
 import type { ShowcaseModel } from "@/lib/showcase";
 import type { HeroPointer } from "@/hooks/use-hero-pointer";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -16,6 +17,7 @@ import { usePrefersReducedMotion } from "@/hooks/use-prefers-reduced-motion";
 import { CarStudioLighting } from "./CarStudioLighting";
 import { CinematicCamera } from "./CinematicCamera";
 import { SpaceEnvironment } from "./SpaceEnvironment";
+import { CarSpaceReflection } from "./CarSpaceReflection";
 import { RandomCarModel } from "./RandomCarModel";
 import { SceneReadyBridge } from "./SceneReadyBridge";
 
@@ -39,6 +41,7 @@ export function CarScene({
   const isMobile = useIsMobile();
   const reducedMotion = usePrefersReducedMotion();
   const effectsEnabled = !reducedMotion;
+  const carRef = useRef<Group>(null);
 
   return (
     <>
@@ -51,8 +54,14 @@ export function CarScene({
       <CarStudioLighting />
 
       <Suspense fallback={<SceneLoader />}>
-        <RandomCarModel model={model} paused={reducedMotion} />
+        <RandomCarModel
+          ref={carRef}
+          model={model}
+          paused={reducedMotion}
+        />
       </Suspense>
+
+      <CarSpaceReflection carRootRef={carRef} />
 
       {onSceneReady && <SceneReadyBridge onReady={onSceneReady} />}
 

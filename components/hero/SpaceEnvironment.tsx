@@ -4,7 +4,6 @@ import { Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import { BackSide } from "three";
 import { Planet } from "./Planet";
-import { SpaceReflectionEnvironment } from "./SpaceReflectionEnvironment";
 import { TwilightHorizonGlow } from "./TwilightHorizonGlow";
 import { TwilightSceneLighting } from "./TwilightLighting";
 
@@ -41,8 +40,6 @@ function SpaceSky() {
       <Suspense fallback={null}>
         <Planet />
       </Suspense>
-
-      <SpaceReflectionEnvironment />
     </>
   );
 }

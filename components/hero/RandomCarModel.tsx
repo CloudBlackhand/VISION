@@ -1,18 +1,9 @@
 "use client";
 
 import { Center, useGLTF } from "@react-three/drei";
-import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
-import {
-  Box3,
-  Mesh,
-  MeshPhysicalMaterial,
-  MeshStandardMaterial,
-  Vector3,
-  type Group,
-  type Object3D,
-  type Texture,
-} from "three";
+import { useFrame } from "@react-three/fiber";
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { Box3, Mesh, Vector3, type Group } from "three";
 import { SHOWCASE_POOL, type ShowcaseModel } from "@/lib/showcase";
 import {
   HERO_CAR_ANCHOR,
@@ -26,91 +17,68 @@ type RandomCarModelProps = {
   paused?: boolean;
 };
 
-function bindEnvironmentMap(root: Object3D, envMap: Texture | null): void {
-  if (!envMap) return;
+export const RandomCarModel = forwardRef<Group, RandomCarModelProps>(
+  function RandomCarModel({ model, paused = false }, ref) {
+    const groupRef = useRef<Group>(null);
+    const yaw = useRef(model.rotation?.[1] ?? 0);
+    const { scene } = useGLTF(model.modelPath);
 
-  root.traverse((obj) => {
-    if (!(obj instanceof Mesh)) return;
+    useImperativeHandle(ref, () => groupRef.current!, []);
 
-    const materials = Array.isArray(obj.material)
-      ? obj.material
-      : [obj.material];
+    const { clonedScene, fitScale } = useMemo(() => {
+      const clone = scene.clone(true);
 
-    for (const material of materials) {
-      if (
-        material instanceof MeshStandardMaterial ||
-        material instanceof MeshPhysicalMaterial
-      ) {
-        material.envMap = envMap;
-        material.needsUpdate = true;
-      }
-    }
-  });
-}
+      const box = new Box3().setFromObject(clone);
+      const size = new Vector3();
+      box.getSize(size);
+      const maxDim = Math.max(size.x, size.y, size.z, 0.001);
+      const scale =
+        (HERO_MODEL_TARGET_SIZE / maxDim) * (model.fitMultiplier ?? 1);
 
-export function RandomCarModel({ model, paused = false }: RandomCarModelProps) {
-  const groupRef = useRef<Group>(null);
-  const yaw = useRef(model.rotation?.[1] ?? 0);
-  const { scene } = useGLTF(model.modelPath);
-  const environmentMap = useThree((state) => state.scene.environment);
+      return { clonedScene: clone, fitScale: scale };
+    }, [scene, model.fitMultiplier]);
 
-  const { clonedScene, fitScale } = useMemo(() => {
-    const clone = scene.clone(true);
+    useEffect(() => {
+      clonedScene.traverse((obj) => {
+        if (obj instanceof Mesh) {
+          obj.castShadow = true;
+          obj.receiveShadow = false;
+          obj.renderOrder = 10;
+          obj.layers.set(HERO_LAYER.car);
+        }
+      });
+    }, [clonedScene]);
 
-    const box = new Box3().setFromObject(clone);
-    const size = new Vector3();
-    box.getSize(size);
-    const maxDim = Math.max(size.x, size.y, size.z, 0.001);
-    const scale =
-      (HERO_MODEL_TARGET_SIZE / maxDim) * (model.fitMultiplier ?? 1);
-
-    return { clonedScene: clone, fitScale: scale };
-  }, [scene, model.fitMultiplier]);
-
-  useEffect(() => {
-    bindEnvironmentMap(clonedScene, environmentMap);
-  }, [clonedScene, environmentMap]);
-
-  useEffect(() => {
-    clonedScene.traverse((obj) => {
-      if (obj instanceof Mesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = false;
-        obj.renderOrder = 10;
-        obj.layers.set(HERO_LAYER.car);
-      }
+    useFrame((state, delta) => {
+      if (paused || !groupRef.current) return;
+      const t = state.clock.elapsedTime;
+      const d = HERO_CAR_DRIFT;
+      const base = model.rotation ?? [0, 0, 0];
+      yaw.current += d.yawSpeed * delta;
+      groupRef.current.rotation.set(
+        base[0] + Math.sin(t * d.pitchHz) * d.pitchAmp,
+        yaw.current,
+        base[2] + Math.cos(t * d.rollHz) * d.rollAmp,
+      );
+      const baseY = (model.position ?? HERO_CAR_ANCHOR.position)[1];
+      groupRef.current.position.y =
+        baseY + Math.sin(t * d.bobHz * 1000) * d.bobAmp;
     });
-  }, [clonedScene]);
 
-  useFrame((state, delta) => {
-    if (paused || !groupRef.current) return;
-    const t = state.clock.elapsedTime;
-    const d = HERO_CAR_DRIFT;
-    const base = model.rotation ?? [0, 0, 0];
-    yaw.current += d.yawSpeed * delta;
-    groupRef.current.rotation.set(
-      base[0] + Math.sin(t * d.pitchHz) * d.pitchAmp,
-      yaw.current,
-      base[2] + Math.cos(t * d.rollHz) * d.rollAmp,
+    return (
+      <group
+        ref={groupRef}
+        scale={fitScale}
+        position={model.position ?? HERO_CAR_ANCHOR.position}
+        layers={HERO_LAYER.car}
+      >
+        <Center>
+          <primitive object={clonedScene} />
+        </Center>
+      </group>
     );
-    const baseY = (model.position ?? HERO_CAR_ANCHOR.position)[1];
-    groupRef.current.position.y =
-      baseY + Math.sin(t * d.bobHz * 1000) * d.bobAmp;
-  });
-
-  return (
-    <group
-      ref={groupRef}
-      scale={fitScale}
-      position={model.position ?? HERO_CAR_ANCHOR.position}
-      layers={HERO_LAYER.car}
-    >
-      <Center>
-        <primitive object={clonedScene} />
-      </Center>
-    </group>
-  );
-}
+  },
+);
 
 for (const { modelPath } of SHOWCASE_POOL) {
   useGLTF.preload(modelPath);
