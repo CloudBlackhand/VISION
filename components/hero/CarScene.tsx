@@ -58,21 +58,21 @@ export function CarScene({
 
       {effectsEnabled && (
         <EffectComposer multisampling={0}>
-          <HueSaturation saturation={isMobile ? -0.12 : -0.22} hue={0} />
+          <HueSaturation saturation={isMobile ? -0.18 : -0.28} hue={0} />
           <BrightnessContrast
-            brightness={isMobile ? 0.06 : 0.03}
-            contrast={0.1}
+            brightness={isMobile ? -0.05 : -0.08}
+            contrast={0.14}
           />
           <Bloom
-            intensity={isMobile ? 0.28 : 0.36}
-            luminanceThreshold={0.78}
-            luminanceSmoothing={0.9}
+            intensity={isMobile ? 0.16 : 0.22}
+            luminanceThreshold={0.88}
+            luminanceSmoothing={0.92}
             mipmapBlur
           />
           <Vignette
             eskil={false}
-            offset={0.28}
-            darkness={isMobile ? 0.45 : 0.52}
+            offset={0.32}
+            darkness={isMobile ? 0.58 : 0.66}
           />
         </EffectComposer>
       )}

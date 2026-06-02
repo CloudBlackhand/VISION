@@ -48,7 +48,7 @@ export function SpaceEnvironment() {
   return (
     <>
       <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#04060c", 38, 120]} />
+      <fog attach="fog" args={["#020408", 22, 88]} />
 
       <SpaceSky />
       <TwilightSceneLighting />

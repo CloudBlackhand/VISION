@@ -44,8 +44,8 @@ function stripGlossExtensions(material: MeshPhysicalMaterial): void {
   material.sheenRoughness = 1;
   material.iridescence = 0;
   material.iridescenceIOR = 1;
-  material.specularIntensity = 0.55;
-  material.specularColor = new Color("#a6adb8");
+  material.specularIntensity = 0.38;
+  material.specularColor = new Color("#6e7684");
 }
 
 function isBrightTrimMaterial(name: string, material: PbrMaterial): boolean {
@@ -68,7 +68,6 @@ function isBodyPaintMaterial(meshName: string, material: PbrMaterial): boolean {
 }
 
 function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
-  material.envMapIntensity = 0.55;
   material.flatShading = false;
 
   if (material.normalMap) {
@@ -85,9 +84,11 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
   const trim = isBrightTrimMaterial(meshName, material);
   const bodyPaint = !trim && isBodyPaintMaterial(meshName, material);
 
+  material.envMapIntensity = bodyPaint ? 0.22 : trim ? 0.32 : 0.28;
+
   if (material.map) {
-    desaturateColor(material.color, bodyPaint ? 0.78 : 0.64);
-    material.color.multiplyScalar(trim ? 0.78 : bodyPaint ? 0.82 : 0.72);
+    desaturateColor(material.color, bodyPaint ? 0.72 : 0.58);
+    material.color.multiplyScalar(trim ? 0.72 : bodyPaint ? 0.58 : 0.65);
     material.metalness = trim
       ? Math.min(material.metalness ?? 0.5, 0.5)
       : bodyPaint
@@ -96,14 +97,14 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
     material.roughness = trim
       ? Math.max(material.roughness ?? 0.35, 0.42)
       : bodyPaint
-        ? 0.2
-        : Math.max(material.roughness ?? 0.32, 0.26);
-    material.emissive = new Color("#080a10");
-    material.emissiveIntensity = 0;
+        ? 0.34
+        : Math.max(material.roughness ?? 0.32, 0.3);
+    material.emissive = trim ? new Color("#1a2030") : new Color("#050608");
+    material.emissiveIntensity = trim && /light/i.test(meshName) ? 0.08 : 0;
 
     if (material instanceof MeshPhysicalMaterial && bodyPaint) {
-      material.clearcoat = 0.35;
-      material.clearcoatRoughness = 0.22;
+      material.clearcoat = 0.22;
+      material.clearcoatRoughness = 0.32;
     }
     return;
   }
@@ -113,13 +114,13 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
     0.2126 * base.r + 0.7152 * base.g + 0.0722 * base.b;
 
   if (luminance > 0.15 && !trim) {
-    material.color = new Color("#0a0c10");
+    material.color = new Color("#06080c");
   }
 
-  material.metalness = trim ? 0.45 : bodyPaint ? 0.86 : 0.78;
-  material.roughness = trim ? 0.42 : bodyPaint ? 0.22 : 0.24;
-  material.emissive = new Color("#080a10");
-  material.emissiveIntensity = 0;
+  material.metalness = trim ? 0.42 : bodyPaint ? 0.82 : 0.72;
+  material.roughness = trim ? 0.44 : bodyPaint ? 0.34 : 0.28;
+  material.emissive = trim ? new Color("#1a2030") : new Color("#050608");
+  material.emissiveIntensity = trim && /light/i.test(meshName) ? 0.08 : 0;
 }
 
 export function disposeMaterials(root: Object3D): void {

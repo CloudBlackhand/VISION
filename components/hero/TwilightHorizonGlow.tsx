@@ -12,8 +12,8 @@ export function TwilightHorizonGlow() {
       side: BackSide,
       blending: AdditiveBlending,
       uniforms: {
-        uColor: { value: [0.12, 0.16, 0.28] },
-        uStrength: { value: 0.07 },
+        uColor: { value: [0.1, 0.14, 0.26] },
+        uStrength: { value: 0.11 },
       },
       vertexShader: `
         varying vec3 vWorldPosition;

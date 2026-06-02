@@ -38,9 +38,9 @@ export function Planet() {
           bumpScale={0.025}
           metalness={0}
           roughness={1}
-          color="#9aa8bc"
-          emissive="#101820"
-          emissiveIntensity={0.045}
+          color="#7a889c"
+          emissive="#080c12"
+          emissiveIntensity={0.028}
           polygonOffset
           polygonOffsetFactor={2}
           polygonOffsetUnits={2}

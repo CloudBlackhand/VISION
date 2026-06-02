@@ -37,7 +37,7 @@ export function CarHeroCanvas({
         gl.setClearColor("#000000", 1);
         gl.outputColorSpace = SRGBColorSpace;
         gl.toneMapping = ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.02;
+        gl.toneMappingExposure = 0.86;
         camera.layers.enable(HERO_LAYER.car);
       }}
     >
