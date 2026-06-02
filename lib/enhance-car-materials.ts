@@ -38,14 +38,14 @@ function desaturateColor(color: Color, amount: number): void {
 
 /** Remove extensões GLTF que geram “filete” branco nas linhas da carroceria */
 function stripGlossExtensions(material: MeshPhysicalMaterial): void {
-  material.clearcoat = 0;
-  material.clearcoatRoughness = 1;
+  material.clearcoat = 0.18;
+  material.clearcoatRoughness = 0.32;
   material.sheen = 0;
   material.sheenRoughness = 1;
   material.iridescence = 0;
   material.iridescenceIOR = 1;
-  material.specularIntensity = 0.35;
-  material.specularColor = new Color("#888888");
+  material.specularIntensity = 0.55;
+  material.specularColor = new Color("#a6adb8");
 }
 
 function isBrightTrimMaterial(name: string, material: PbrMaterial): boolean {
@@ -62,8 +62,13 @@ function isBrightTrimMaterial(name: string, material: PbrMaterial): boolean {
   return lum > 0.55;
 }
 
+function isBodyPaintMaterial(meshName: string, material: PbrMaterial): boolean {
+  const combined = `${meshName} ${material.name}`.toLowerCase();
+  return /paint|body|colou?r|carroceria|lataria/i.test(combined);
+}
+
 function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
-  material.envMapIntensity = 0.4;
+  material.envMapIntensity = 0.55;
   material.flatShading = false;
 
   if (material.normalMap) {
@@ -78,18 +83,28 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
   }
 
   const trim = isBrightTrimMaterial(meshName, material);
+  const bodyPaint = !trim && isBodyPaintMaterial(meshName, material);
 
   if (material.map) {
-    desaturateColor(material.color, 0.58);
-    material.color.multiplyScalar(trim ? 0.75 : 0.68);
+    desaturateColor(material.color, bodyPaint ? 0.78 : 0.64);
+    material.color.multiplyScalar(trim ? 0.78 : bodyPaint ? 0.82 : 0.72);
     material.metalness = trim
-      ? Math.min(material.metalness ?? 0.5, 0.55)
-      : Math.min(Math.max(material.metalness ?? 0.4, 0.5), 0.72);
+      ? Math.min(material.metalness ?? 0.5, 0.5)
+      : bodyPaint
+        ? 0.88
+        : Math.min(Math.max(material.metalness ?? 0.4, 0.56), 0.76);
     material.roughness = trim
-      ? Math.max(material.roughness ?? 0.35, 0.38)
-      : Math.max(material.roughness ?? 0.32, 0.24);
+      ? Math.max(material.roughness ?? 0.35, 0.42)
+      : bodyPaint
+        ? 0.2
+        : Math.max(material.roughness ?? 0.32, 0.26);
     material.emissive = new Color("#080a10");
     material.emissiveIntensity = 0;
+
+    if (material instanceof MeshPhysicalMaterial && bodyPaint) {
+      material.clearcoat = 0.35;
+      material.clearcoatRoughness = 0.22;
+    }
     return;
   }
 
@@ -101,8 +116,8 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
     material.color = new Color("#0a0c10");
   }
 
-  material.metalness = trim ? 0.45 : 0.78;
-  material.roughness = trim ? 0.42 : 0.22;
+  material.metalness = trim ? 0.45 : bodyPaint ? 0.86 : 0.78;
+  material.roughness = trim ? 0.42 : bodyPaint ? 0.22 : 0.24;
   material.emissive = new Color("#080a10");
   material.emissiveIntensity = 0;
 }
