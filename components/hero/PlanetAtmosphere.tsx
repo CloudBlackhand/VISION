@@ -12,9 +12,9 @@ import {
 /** Espessura da camada atmosférica (visual fino) */
 export const ATMOSPHERE_SCALE = 1.04;
 
-const ATMOSPHERE_COLOR = new Color("#4a6a8a");
-const PEAK_OPACITY = 0.038;
-const EDGE_OPACITY = 0.01;
+const ATMOSPHERE_COLOR = new Color("#6a94c8");
+const PEAK_OPACITY = 0.058;
+const EDGE_OPACITY = 0.014;
 const FADE_START = 0.5;
 /** Só aparece no limbo do planeta — evita faixa grossa */
 const LIMB_INNER = 0.9;

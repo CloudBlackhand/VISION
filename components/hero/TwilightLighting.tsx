@@ -2,42 +2,64 @@
 
 import { useLayoutEffect, useRef } from "react";
 import type { Group, Light } from "three";
+import { HERO_CAR_ANCHOR, HERO_PLANET } from "@/lib/hero-scene";
 import { HERO_LAYER } from "@/lib/hero-layers";
 
-/** Sol distante — ilumina planeta/estrelas, não o carro */
+/** Sol distante — ilumina planeta e atmosfera */
 const SUN_POSITION: [number, number, number] = [48, 2, 18];
 
-/** Brilho do planeta atrás do carro — só contorno (rim) */
-const PLANET_RIM_POSITION: [number, number, number] = [-6, 14, -38];
+const PLANET_POS = HERO_PLANET.position;
+const CAR_POS = HERO_CAR_ANCHOR.position;
 
 export function TwilightSceneLighting() {
+  const groupRef = useRef<Group>(null);
+
+  useLayoutEffect(() => {
+    const group = groupRef.current;
+    if (!group) return;
+    group.traverse((obj) => {
+      if ((obj as Light).isLight) {
+        obj.layers.set(HERO_LAYER.world);
+      }
+    });
+  });
+
   return (
-    <>
-      <ambientLight intensity={0.035} color="#080c14" />
+    <group ref={groupRef} name="twilight-scene-lights">
+      <ambientLight intensity={0.04} color="#0a1018" />
 
       <hemisphereLight
-        color="#142238"
+        color="#1e3458"
         groundColor="#120e0a"
-        intensity={0.33}
+        intensity={0.38}
       />
 
       <directionalLight
         position={SUN_POSITION}
-        intensity={2.62}
-        color="#9eb4d4"
+        intensity={3.1}
+        color="#b8cce8"
+      />
+
+      {/* Planeta como fonte de luz visível no céu */}
+      <pointLight
+        position={PLANET_POS}
+        intensity={22}
+        distance={160}
+        decay={1.6}
+        color="#d8e8ff"
       />
 
       <directionalLight
         position={[-14, 8, -10]}
-        intensity={0.25}
-        color="#2a3850"
+        intensity={0.28}
+        color="#3a5078"
       />
-    </>
+    </group>
   );
 }
 
 /**
- * Luzes só no layer do carro — rim fraco nas bordas, centro permanece no escuro.
+ * Luz rebatida do planeta no carro — fill suave + rim alinhado à posição real da Terra.
  */
 export function TwilightCarLighting() {
   const groupRef = useRef<Group>(null);
@@ -55,27 +77,40 @@ export function TwilightCarLighting() {
 
   return (
     <group ref={groupRef} name="twilight-car-lights">
-      <ambientLight intensity={0.02} color="#0a0e16" />
+      <ambientLight intensity={0.018} color="#0c121c" />
 
-      {/* Rim principal — vindo do planeta / horizonte (como no edit) */}
-      <directionalLight
-        position={PLANET_RIM_POSITION}
-        intensity={0.65}
-        color="#8ea8cc"
+      {/* Bounce: luz que “sai” do planeta e bate na lataria */}
+      <hemisphereLight
+        color="#7aa4d4"
+        groundColor="#050608"
+        intensity={0.32}
       />
 
-      {/* Contorno lateral frio, quase imperceptível */}
+      <directionalLight position={PLANET_POS} intensity={1.05} color="#c8dcf4">
+        <object3D position={CAR_POS} />
+      </directionalLight>
+
+      <pointLight
+        position={[
+          PLANET_POS[0],
+          PLANET_POS[1] + HERO_PLANET.scale * 0.35,
+          PLANET_POS[2],
+        ]}
+        intensity={2.4}
+        distance={90}
+        decay={2}
+        color="#b0d0f8"
+      />
+
+      {/* Rim no contorno — mesma direção do planeta */}
+      <directionalLight position={PLANET_POS} intensity={0.48} color="#9eb8dc">
+        <object3D position={CAR_POS} />
+      </directionalLight>
+
       <directionalLight
         position={[20, 2, 12]}
-        intensity={0.125}
+        intensity={0.08}
         color="#3d4d68"
-      />
-
-      {/* Calor mínimo no horizonte — não ilumina o centro */}
-      <directionalLight
-        position={[8, -4, 22]}
-        intensity={0.075}
-        color="#5a4030"
       />
     </group>
   );

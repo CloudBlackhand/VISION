@@ -143,8 +143,8 @@ export function CarSpaceReflection({
     applyEnvToSlots(
       materialSlots.current,
       envMap,
-      isMobile ? 1.1 : 1.45,
-      isMobile ? 0.55 : 0.75,
+      isMobile ? 1.2 : 1.62,
+      isMobile ? 0.6 : 0.82,
     );
 
     capturedForModel.current = modelKey;
