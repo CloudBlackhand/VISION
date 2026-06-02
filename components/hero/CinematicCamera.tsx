@@ -23,9 +23,9 @@ type CinematicCameraProps = {
   mouseParallax?: boolean;
 };
 
-/** Tremor leve tipo câmera “na mão” no vácuo (edit) */
-const HANDHELD_POSITION = 0.018;
-const HANDHELD_TARGET = 0.008;
+/** Tremor leve tipo câmera “na mão”, mais controlado para macro */
+const HANDHELD_POSITION = 0.012;
+const HANDHELD_TARGET = 0.005;
 
 function applyEasing(t: number, mode: ShotEasing = "smooth"): number {
   const clamped = MathUtils.clamp(t, 0, 1);
@@ -121,12 +121,14 @@ export function CinematicCamera({
 
     const parallaxScale =
       shot.duration <= 1.6
-        ? 0.2
-        : shot.from.fov >= 48
-          ? 0.35
-          : shot.from.fov >= 40
-            ? 0.55
-            : 1;
+        ? 0.12
+        : shot.from.fov <= 20
+          ? 0.18
+          : shot.from.fov <= 24
+            ? 0.24
+            : shot.from.fov <= 28
+              ? 0.3
+              : 0.36;
 
     camera.position.copy(vectors.position);
     camera.position.x += handheldX;
