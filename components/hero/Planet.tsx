@@ -31,7 +31,7 @@ export function Planet() {
       scale={HERO_PLANET.scale}
     >
       <mesh ref={surfaceRef} renderOrder={0}>
-        <sphereGeometry args={[1, 96, 96]} />
+        <sphereGeometry args={[1, 64, 64]} />
         <meshStandardMaterial
           map={colorMap}
           bumpMap={bumpMap}

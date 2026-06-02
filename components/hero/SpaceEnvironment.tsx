@@ -21,20 +21,20 @@ function SpaceSky() {
       <Stars
         radius={120}
         depth={80}
-        count={8000}
-        factor={2.2}
+        count={3500}
+        factor={2}
         saturation={0}
         fade
-        speed={0.1}
+        speed={0.08}
       />
       <Stars
         radius={60}
         depth={40}
-        count={1800}
-        factor={1.2}
+        count={900}
+        factor={1.1}
         saturation={0}
         fade
-        speed={0.05}
+        speed={0.04}
       />
 
       <Suspense fallback={null}>

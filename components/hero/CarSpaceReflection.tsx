@@ -11,12 +11,20 @@ import {
   WebGLCubeRenderTarget,
   type Group,
   type Texture,
+  type WebGLRenderTarget,
 } from "three";
 import { HERO_LAYER } from "@/lib/hero-layers";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 
 type CarSpaceReflectionProps = {
   carRootRef: React.RefObject<Group | null>;
+  /** Recaptura cubemap quando o modelo muda */
+  modelKey: string;
+};
+
+type CarMaterialSlot = {
+  material: MeshStandardMaterial | MeshPhysicalMaterial;
+  paint: boolean;
 };
 
 function isPaintMaterial(meshName: string, material: MeshStandardMaterial): boolean {
@@ -24,12 +32,9 @@ function isPaintMaterial(meshName: string, material: MeshStandardMaterial): bool
   return /paint|body|colou?r|carroceria|lataria|coloured/i.test(label);
 }
 
-function applyEnvToCar(
-  root: Group,
-  envMap: Texture,
-  paintIntensity: number,
-  defaultIntensity: number,
-) {
+function collectCarMaterials(root: Group): CarMaterialSlot[] {
+  const slots: CarMaterialSlot[] = [];
+
   root.traverse((child) => {
     if (!(child instanceof Mesh)) return;
 
@@ -42,25 +47,47 @@ function applyEnvToCar(
         material instanceof MeshStandardMaterial ||
         material instanceof MeshPhysicalMaterial
       ) {
-        material.envMap = envMap;
-        material.envMapIntensity = isPaintMaterial(child.name, material)
-          ? paintIntensity
-          : defaultIntensity;
-        material.needsUpdate = true;
+        slots.push({
+          material,
+          paint: isPaintMaterial(child.name, material),
+        });
       }
     }
   });
+
+  return slots;
 }
 
-/** Captura planeta/estrelas ao redor do carro e reflete na pintura (GLTF original) */
-export function CarSpaceReflection({ carRootRef }: CarSpaceReflectionProps) {
+function applyEnvToSlots(
+  slots: CarMaterialSlot[],
+  envMap: Texture,
+  paintIntensity: number,
+  defaultIntensity: number,
+) {
+  for (const { material, paint } of slots) {
+    material.envMap = envMap;
+    material.envMapIntensity = paint ? paintIntensity : defaultIntensity;
+  }
+}
+
+/**
+ * Cubemap capturado uma vez (planeta + estrelas) — evita re-render a cada frame
+ * que causava travamentos na animação da câmera.
+ */
+export function CarSpaceReflection({
+  carRootRef,
+  modelKey,
+}: CarSpaceReflectionProps) {
   const { gl, scene } = useThree();
   const isMobile = useIsMobile();
-  const tick = useRef(0);
+
+  const warmupFrames = useRef(0);
+  const capturedForModel = useRef<string | null>(null);
+  const materialSlots = useRef<CarMaterialSlot[]>([]);
+  const pmremRt = useRef<WebGLRenderTarget | null>(null);
   const envTexture = useRef<Texture | null>(null);
 
-  const cubeSize = isMobile ? 256 : 512;
-  const refreshInterval = isMobile ? 0.4 : 0.22;
+  const cubeSize = isMobile ? 128 : 192;
 
   const { cubeTarget, cubeCamera, pmrem } = useMemo(() => {
     const target = new WebGLCubeRenderTarget(cubeSize);
@@ -72,39 +99,55 @@ export function CarSpaceReflection({ carRootRef }: CarSpaceReflectionProps) {
   }, [gl, cubeSize]);
 
   useEffect(() => {
+    capturedForModel.current = null;
+    materialSlots.current = [];
+    warmupFrames.current = 0;
+  }, [modelKey]);
+
+  useEffect(() => {
     return () => {
       pmrem.dispose();
       cubeTarget.dispose();
+      pmremRt.current?.dispose();
       envTexture.current?.dispose();
     };
   }, [pmrem, cubeTarget]);
 
-  useFrame((_, delta) => {
+  useFrame(() => {
+    if (capturedForModel.current === modelKey) return;
+    if (document.visibilityState === "hidden") return;
+
     const carRoot = carRootRef.current;
     if (!carRoot) return;
 
-    tick.current += delta;
-    if (tick.current < refreshInterval) return;
-    tick.current = 0;
+    warmupFrames.current += 1;
+    if (warmupFrames.current < 45) return;
 
     carRoot.getWorldPosition(cubeCamera.position);
     cubeCamera.update(gl, scene);
 
+    pmremRt.current?.dispose();
+    const rt = pmrem.fromCubemap(cubeTarget.texture);
+    pmremRt.current = rt;
+
     envTexture.current?.dispose();
-    const envMap = pmrem.fromCubemap(cubeTarget.texture).texture;
+    const envMap = rt.texture;
     envTexture.current = envMap;
 
     scene.environment = envMap;
-    if ("environmentIntensity" in scene) {
-      (scene as { environmentIntensity: number }).environmentIntensity = 1;
+
+    if (materialSlots.current.length === 0) {
+      materialSlots.current = collectCarMaterials(carRoot);
     }
 
-    applyEnvToCar(
-      carRoot,
+    applyEnvToSlots(
+      materialSlots.current,
       envMap,
       isMobile ? 1.1 : 1.45,
       isMobile ? 0.55 : 0.75,
     );
+
+    capturedForModel.current = modelKey;
   });
 
   return null;

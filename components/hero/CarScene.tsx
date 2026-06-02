@@ -61,7 +61,7 @@ export function CarScene({
         />
       </Suspense>
 
-      <CarSpaceReflection carRootRef={carRef} />
+      <CarSpaceReflection carRootRef={carRef} modelKey={model.id} />
 
       {onSceneReady && <SceneReadyBridge onReady={onSceneReady} />}
 
@@ -73,10 +73,10 @@ export function CarScene({
             contrast={0.12}
           />
           <Bloom
-            intensity={isMobile ? 0.2 : 0.28}
+            intensity={isMobile ? 0.18 : 0.26}
             luminanceThreshold={0.84}
             luminanceSmoothing={0.92}
-            mipmapBlur
+            mipmapBlur={!isMobile}
           />
           <Vignette
             eskil={false}

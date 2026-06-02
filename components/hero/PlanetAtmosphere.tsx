@@ -94,7 +94,7 @@ export function PlanetAtmosphere() {
 
   return (
     <mesh scale={ATMOSPHERE_SCALE} material={material} renderOrder={1}>
-      <sphereGeometry args={[1, 96, 96]} />
+      <sphereGeometry args={[1, 64, 64]} />
     </mesh>
   );
 }

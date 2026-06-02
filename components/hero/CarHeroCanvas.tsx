@@ -26,7 +26,7 @@ export function CarHeroCanvas({
   return (
     <Canvas
       className="h-full w-full touch-none bg-black"
-      dpr={isMobile ? [1, 1.25] : [1, 1.75]}
+      dpr={isMobile ? [1, 1.2] : [1, 1.45]}
       gl={{
         antialias: true,
         alpha: false,
