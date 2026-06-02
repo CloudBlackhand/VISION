@@ -1,9 +1,18 @@
 "use client";
 
 import { Center, useGLTF } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import { Box3, Mesh, Vector3, type Group } from "three";
+import {
+  Box3,
+  Mesh,
+  MeshPhysicalMaterial,
+  MeshStandardMaterial,
+  Vector3,
+  type Group,
+  type Object3D,
+  type Texture,
+} from "three";
 import { SHOWCASE_POOL, type ShowcaseModel } from "@/lib/showcase";
 import {
   HERO_CAR_ANCHOR,
@@ -11,21 +20,42 @@ import {
   HERO_MODEL_TARGET_SIZE,
 } from "@/lib/hero-scene";
 import { HERO_LAYER } from "@/lib/hero-layers";
-import { enhanceCarMaterials } from "@/lib/enhance-car-materials";
 
 type RandomCarModelProps = {
   model: ShowcaseModel;
   paused?: boolean;
 };
 
+function bindEnvironmentMap(root: Object3D, envMap: Texture | null): void {
+  if (!envMap) return;
+
+  root.traverse((obj) => {
+    if (!(obj instanceof Mesh)) return;
+
+    const materials = Array.isArray(obj.material)
+      ? obj.material
+      : [obj.material];
+
+    for (const material of materials) {
+      if (
+        material instanceof MeshStandardMaterial ||
+        material instanceof MeshPhysicalMaterial
+      ) {
+        material.envMap = envMap;
+        material.needsUpdate = true;
+      }
+    }
+  });
+}
+
 export function RandomCarModel({ model, paused = false }: RandomCarModelProps) {
   const groupRef = useRef<Group>(null);
   const yaw = useRef(model.rotation?.[1] ?? 0);
   const { scene } = useGLTF(model.modelPath);
+  const environmentMap = useThree((state) => state.scene.environment);
 
   const { clonedScene, fitScale } = useMemo(() => {
     const clone = scene.clone(true);
-    enhanceCarMaterials(clone);
 
     const box = new Box3().setFromObject(clone);
     const size = new Vector3();
@@ -36,6 +66,10 @@ export function RandomCarModel({ model, paused = false }: RandomCarModelProps) {
 
     return { clonedScene: clone, fitScale: scale };
   }, [scene, model.fitMultiplier]);
+
+  useEffect(() => {
+    bindEnvironmentMap(clonedScene, environmentMap);
+  }, [clonedScene, environmentMap]);
 
   useEffect(() => {
     clonedScene.traverse((obj) => {

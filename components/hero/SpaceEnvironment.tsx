@@ -1,9 +1,10 @@
 "use client";
 
-import { Environment, Stars } from "@react-three/drei";
+import { Stars } from "@react-three/drei";
 import { Suspense } from "react";
 import { BackSide } from "three";
 import { Planet } from "./Planet";
+import { SpaceReflectionEnvironment } from "./SpaceReflectionEnvironment";
 import { TwilightHorizonGlow } from "./TwilightHorizonGlow";
 import { TwilightSceneLighting } from "./TwilightLighting";
 
@@ -37,12 +38,11 @@ function SpaceSky() {
         speed={0.05}
       />
 
-      {/* IBL para reflexos de estrelas no verniz do carro */}
-      <Environment files="/hdr/space.hdr" background={false} />
-
       <Suspense fallback={null}>
         <Planet />
       </Suspense>
+
+      <SpaceReflectionEnvironment />
     </>
   );
 }
