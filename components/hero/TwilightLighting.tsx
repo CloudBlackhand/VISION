@@ -13,23 +13,23 @@ const PLANET_RIM_POSITION: [number, number, number] = [-6, 14, -38];
 export function TwilightSceneLighting() {
   return (
     <>
-      <ambientLight intensity={0.028} color="#080c14" />
+      <ambientLight intensity={0.035} color="#080c14" />
 
       <hemisphereLight
         color="#142238"
         groundColor="#120e0a"
-        intensity={0.26}
+        intensity={0.33}
       />
 
       <directionalLight
         position={SUN_POSITION}
-        intensity={2.1}
+        intensity={2.62}
         color="#9eb4d4"
       />
 
       <directionalLight
         position={[-14, 8, -10]}
-        intensity={0.2}
+        intensity={0.25}
         color="#2a3850"
       />
     </>
@@ -55,26 +55,26 @@ export function TwilightCarLighting() {
 
   return (
     <group ref={groupRef} name="twilight-car-lights">
-      <ambientLight intensity={0.016} color="#0a0e16" />
+      <ambientLight intensity={0.02} color="#0a0e16" />
 
       {/* Rim principal — vindo do planeta / horizonte (como no edit) */}
       <directionalLight
         position={PLANET_RIM_POSITION}
-        intensity={0.52}
+        intensity={0.65}
         color="#8ea8cc"
       />
 
       {/* Contorno lateral frio, quase imperceptível */}
       <directionalLight
         position={[20, 2, 12]}
-        intensity={0.1}
+        intensity={0.125}
         color="#3d4d68"
       />
 
       {/* Calor mínimo no horizonte — não ilumina o centro */}
       <directionalLight
         position={[8, -4, 22]}
-        intensity={0.06}
+        intensity={0.075}
         color="#5a4030"
       />
     </group>

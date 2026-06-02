@@ -84,11 +84,11 @@ function tunePbrMaterial(material: PbrMaterial, meshName: string): void {
   const trim = isBrightTrimMaterial(meshName, material);
   const bodyPaint = !trim && isBodyPaintMaterial(meshName, material);
 
-  material.envMapIntensity = bodyPaint ? 0.22 : trim ? 0.32 : 0.28;
+  material.envMapIntensity = bodyPaint ? 0.28 : trim ? 0.4 : 0.35;
 
   if (material.map) {
-    desaturateColor(material.color, bodyPaint ? 0.72 : 0.58);
-    material.color.multiplyScalar(trim ? 0.72 : bodyPaint ? 0.58 : 0.65);
+    desaturateColor(material.color, bodyPaint ? 0.74 : 0.6);
+    material.color.multiplyScalar(trim ? 0.76 : bodyPaint ? 0.64 : 0.7);
     material.metalness = trim
       ? Math.min(material.metalness ?? 0.5, 0.5)
       : bodyPaint
