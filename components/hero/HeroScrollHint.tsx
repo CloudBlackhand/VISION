@@ -1,19 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const SCROLL_TARGET_ID = "destaques";
+const HIDE_AFTER_Y = 48;
 
 export function HeroScrollHint() {
   const [visible, setVisible] = useState(true);
+  const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const hide = () => {
-      if (window.scrollY > 48) setVisible(false);
+    const update = () => {
+      const nextVisible = window.scrollY <= HIDE_AFTER_Y;
+      setVisible(nextVisible);
     };
-    hide();
-    window.addEventListener("scroll", hide, { passive: true });
-    return () => window.removeEventListener("scroll", hide);
+
+    const onScroll = () => {
+      if (rafRef.current != null) return;
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        update();
+      });
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafRef.current != null) {
+        window.cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
   }, []);
 
   if (!visible) return null;
