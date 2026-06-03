@@ -22,9 +22,9 @@ export function HeroCanvasClient({ model }: HeroCanvasClientProps) {
 
   return (
     <div
-      className="absolute inset-0 cursor-grab active:cursor-grabbing"
-      onPointerMove={onPointerMove}
-      onPointerLeave={onPointerLeave}
+      className={`absolute inset-0 ${isMobile ? "touch-pan-y" : "cursor-grab active:cursor-grabbing touch-none"}`}
+      onPointerMove={isMobile ? undefined : onPointerMove}
+      onPointerLeave={isMobile ? undefined : onPointerLeave}
     >
       <CarHeroCanvas
         model={model}
