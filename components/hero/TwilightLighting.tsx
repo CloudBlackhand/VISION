@@ -26,27 +26,27 @@ export function TwilightSceneLighting() {
 
   return (
     <group ref={groupRef} name="twilight-scene-lights">
-      <ambientLight intensity={0.04} color="#0a1018" />
+      <ambientLight intensity={0.02} color="#050810" />
 
       <hemisphereLight
-        color="#1e3458"
-        groundColor="#120e0a"
-        intensity={0.38}
+        color="#2a4a7a"
+        groundColor="#020205"
+        intensity={0.25}
       />
 
       <directionalLight
         position={SUN_POSITION}
-        intensity={3.1}
-        color="#b8cce8"
+        intensity={3.2}
+        color="#d0e0f8"
       />
 
-      {/* Planeta como fonte de luz visível no céu */}
+      {/* Luz sutil do planeta - não é uma fonte de luz forte */}
       <pointLight
         position={PLANET_POS}
-        intensity={22}
-        distance={160}
-        decay={1.6}
-        color="#d8e8ff"
+        intensity={8}
+        distance={120}
+        decay={1.8}
+        color="#8899bb"
       />
 
       <directionalLight
@@ -79,11 +79,11 @@ export function TwilightCarLighting() {
     <group ref={groupRef} name="twilight-car-lights">
       <ambientLight intensity={0.018} color="#0c121c" />
 
-      {/* Bounce: luz que “sai” do planeta e bate na lataria */}
+      {/* Bounce: luz que "sai" do planeta e bate na lataria */}
       <hemisphereLight
         color="#7aa4d4"
         groundColor="#050608"
-        intensity={0.32}
+        intensity={0.4}
       />
 
       <directionalLight position={PLANET_POS} intensity={1.05} color="#c8dcf4">
@@ -103,7 +103,7 @@ export function TwilightCarLighting() {
       />
 
       {/* Rim no contorno — mesma direção do planeta */}
-      <directionalLight position={PLANET_POS} intensity={0.48} color="#9eb8dc">
+      <directionalLight position={PLANET_POS} intensity={0.55} color="#9eb8dc">
         <object3D position={CAR_POS} />
       </directionalLight>
 

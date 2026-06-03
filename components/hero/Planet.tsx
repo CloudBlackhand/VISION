@@ -35,15 +35,11 @@ export function Planet() {
         <meshStandardMaterial
           map={colorMap}
           bumpMap={bumpMap}
-          bumpScale={0.025}
-          metalness={0}
-          roughness={0.88}
-          color="#d8e4f4"
-          emissive="#4a6888"
-          emissiveIntensity={0.22}
-          polygonOffset
-          polygonOffsetFactor={2}
-          polygonOffsetUnits={2}
+          bumpScale={0.04}
+          metalness={0.05}
+          roughness={0.95}
+          emissive="#000000"
+          emissiveIntensity={0}
         />
       </mesh>
 

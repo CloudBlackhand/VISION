@@ -10,7 +10,7 @@ import { TwilightSceneLighting } from "./TwilightLighting";
 function SpaceSky() {
   return (
     <>
-      <mesh scale={160} frustumCulled={false}>
+      <mesh scale={160}>
         <sphereGeometry args={[1, 32, 32]} />
         <meshBasicMaterial color="#000000" side={BackSide} depthWrite={false} />
       </mesh>
@@ -19,22 +19,22 @@ function SpaceSky() {
       <TwilightHorizonGlow />
 
       <Stars
-        radius={120}
-        depth={80}
-        count={3500}
-        factor={2}
-        saturation={0}
+        radius={150}
+        depth={100}
+        count={5000}
+        factor={1.5}
+        saturation={0.2}
         fade
-        speed={0.08}
+        speed={0}
       />
       <Stars
-        radius={60}
-        depth={40}
-        count={900}
-        factor={1.1}
-        saturation={0}
+        radius={80}
+        depth={50}
+        count={1500}
+        factor={0.8}
+        saturation={0.1}
         fade
-        speed={0.04}
+        speed={0}
       />
 
       <Suspense fallback={null}>
