@@ -6,27 +6,16 @@ import { useEffect, useRef } from "react";
 import {
   LinearFilter,
   LinearMipmapLinearFilter,
-  NoColorSpace,
-  SRGBColorSpace,
   type Group,
   Mesh,
+  SRGBColorSpace,
   type Texture,
 } from "three";
 import { HERO_PLANET } from "@/lib/hero-scene";
 import { PlanetAtmosphere } from "./PlanetAtmosphere";
 
-function configureColorTexture(tex: Texture, maxAnisotropy: number) {
+function configurePlanetTexture(tex: Texture, maxAnisotropy: number) {
   tex.colorSpace = SRGBColorSpace;
-  tex.generateMipmaps = true;
-  tex.minFilter = LinearMipmapLinearFilter;
-  tex.magFilter = LinearFilter;
-  tex.anisotropy = Math.min(16, maxAnisotropy);
-  tex.needsUpdate = true;
-}
-
-/** Height/roughness — linear, sem SRGB, para o relevo não ficar “liso”. */
-function configureDataTexture(tex: Texture, maxAnisotropy: number) {
-  tex.colorSpace = NoColorSpace;
   tex.generateMipmaps = true;
   tex.minFilter = LinearMipmapLinearFilter;
   tex.magFilter = LinearFilter;
@@ -39,16 +28,16 @@ export function Planet() {
   const surfaceRef = useRef<Mesh>(null);
   const { gl } = useThree();
 
-  const [colorMap, reliefMap] = useTexture([
+  const [colorMap, bumpMap] = useTexture([
     "/textures/planet-surface.jpg",
     "/textures/planet-bump.jpg",
   ]);
 
   useEffect(() => {
     const maxAniso = gl.capabilities.getMaxAnisotropy();
-    configureColorTexture(colorMap, maxAniso);
-    configureDataTexture(reliefMap, maxAniso);
-  }, [colorMap, reliefMap, gl]);
+    configurePlanetTexture(colorMap, maxAniso);
+    configurePlanetTexture(bumpMap, maxAniso);
+  }, [colorMap, bumpMap, gl]);
 
   useFrame((_, delta) => {
     if (surfaceRef.current) {
@@ -66,11 +55,10 @@ export function Planet() {
         <sphereGeometry args={[1, 96, 96]} />
         <meshStandardMaterial
           map={colorMap}
-          normalMap={reliefMap}
-          normalScale={[2.6, 2.6]}
-          roughnessMap={reliefMap}
-          roughness={1}
-          metalness={0.02}
+          bumpMap={bumpMap}
+          bumpScale={0.04}
+          metalness={0.05}
+          roughness={0.95}
           emissive="#000000"
           emissiveIntensity={0}
         />

@@ -31,7 +31,7 @@ export function TwilightSceneLighting() {
       <hemisphereLight
         color="#2a4a7a"
         groundColor="#020205"
-        intensity={0.18}
+        intensity={0.25}
       />
 
       <directionalLight
@@ -43,7 +43,7 @@ export function TwilightSceneLighting() {
       {/* Luz sutil do planeta - não é uma fonte de luz forte */}
       <pointLight
         position={PLANET_POS}
-        intensity={4.5}
+        intensity={8}
         distance={120}
         decay={1.8}
         color="#8899bb"

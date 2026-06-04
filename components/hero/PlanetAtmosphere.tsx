@@ -12,9 +12,9 @@ import {
 /** Espessura da camada atmosférica (visual fino) */
 export const ATMOSPHERE_SCALE = 1.025;
 
-const ATMOSPHERE_COLOR = new Color("#5a8fd4");
-const PEAK_OPACITY = 0.34;
-const EDGE_OPACITY = 0.06;
+const ATMOSPHERE_COLOR = new Color("#4a7ab8");
+const PEAK_OPACITY = 0.25;
+const EDGE_OPACITY = 0.05;
 const FADE_START = 0.3;
 /** Só aparece no limbo do planeta — evita faixa grossa */
 const LIMB_INNER = 0.85;
@@ -95,7 +95,7 @@ export function PlanetAtmosphere() {
 
   return (
     <mesh scale={ATMOSPHERE_SCALE} material={material} renderOrder={1}>
-      <sphereGeometry args={[1, 96, 96]} />
+      <sphereGeometry args={[1, 64, 64]} />
     </mesh>
   );
 }
