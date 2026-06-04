@@ -16,9 +16,7 @@ export const HERO_CAMERA = {
  */
 export const HERO_PLANET = {
   position: [0, -28, -44] as [number, number, number],
-  /** Raio visual alvo (antes: esfera unitária × scale) */
   scale: 36,
-  modelPath: "/models/world/scene.gltf",
 } as const;
 
 /** Carro flutua à frente do planeta, nunca dentro da esfera */
