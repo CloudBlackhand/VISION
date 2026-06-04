@@ -19,6 +19,11 @@ export const HERO_PLANET = {
   /** Raio visual alvo (antes: esfera unitária × scale) */
   scale: 36,
   modelPath: "/models/world/scene.gltf",
+  /** Export Fab não inclui o PNG do colorsheet — usamos as texturas do hero. */
+  textures: {
+    color: "/textures/planet-surface.jpg",
+    bump: "/textures/planet-bump.jpg",
+  },
 } as const;
 
 /** Carro flutua à frente do planeta, nunca dentro da esfera */
